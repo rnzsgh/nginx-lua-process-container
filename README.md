@@ -23,11 +23,18 @@ limitations under the License.
 
 
 ### Build
+```
 docker build .
+```
 
 ### Run
+```
 docker run -d -p 8080:8080 IMAGE_ID
+```
 
 ### Test
 Post a Java class for compilation/execution.
+
+```
 ./put.sh
+```

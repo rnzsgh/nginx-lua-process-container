@@ -3,6 +3,8 @@
 # nginx-lua-process-container
 A sample Docker container with Nginx/OpenResty that executes a command
 
+This sample was based on the [openresty-docker](https://github.com/torhve/openresty-docker) example.
+
 Any code, applications, scripts, templates, proofs of concept,
 documentation and other items are provided for illustration purposes only.
 

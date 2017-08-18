@@ -36,5 +36,5 @@ docker run -d -p 8080:8080 IMAGE_ID
 Post a Java class for compilation/execution.
 
 ```
-./put.sh
+./test.sh
 ```

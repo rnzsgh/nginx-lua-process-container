@@ -59,5 +59,7 @@ ngx.say(cjson.encode({
   code = code
 }))
 
+cleanup()
+
 ngx.exit(200)
 

@@ -23,6 +23,8 @@ limitations under the License.
 
 
 ### Build
+Building the container the first time is slow, but incremental builds are fast.
+
 ```
 docker build .
 ```

@@ -51,7 +51,6 @@ if compileError == '' then
   -- to limit socket, network, file, etc.
   os.execute('java -classpath /tmp Test > /tmp/run_output')
   run = readFile('/tmp/run_output')
-
 end
 
 ngx.say(cjson.encode({

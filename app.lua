@@ -15,24 +15,50 @@
 -- See the License for the specific language governing permissions and
 -- limitations under the License.
 
+local cjson = require "cjson"
+
 ngx.req.read_body()
 
+function cleanup ()
+  os.remove('/tmp/Test.java')
+  os.remove('/tmp/Test.class')
+  os.remove('/tmp/compile_output')
+  os.remove('/tmp/run_output')
+end
+
+function readFile (fileName)
+  local file = io.open(fileName, 'r')
+  local content = file:read('*a')
+  file:close()
+  return content
+end
+
+cleanup()
+
 local code = ngx.req.get_body_data()
-ngx.say(code)
 
-testFile = io.open("/tmp/Test.java", "w+")
-testFile:write(code)
-testFile:close()
+local java_file = io.open('/tmp/Test.java', 'w+')
+java_file:write(code)
+java_file:close()
 
-local compileCommand = io.popen("javac -d /tmp/ /tmp/Test.java")
-local compileResult = compileCommand:read("*a")
-compileCommand:close()
-ngx.say(compileResult)
+os.execute('javac -d /tmp/ /tmp/Test.java 2> /tmp/compile_output')
+local compileError = readFile('/tmp/compile_output')
 
-local runCommand = io.popen("java -classpath /tmp/ Test")
-local runResult = runCommand:read("*a")
-runCommand:close()
-ngx.say(runResult)
+-- Only run if the compile did not fail
+local run = ''
+if compileError == '' then
+  -- This is really powerful if Java can run any command. Configure runtime security
+  -- to limit socket, network, file, etc.
+  os.execute('java -classpath /tmp Test > /tmp/run_output')
+  run = readFile('/tmp/run_output')
+
+end
+
+ngx.say(cjson.encode({
+  compileError = compileError,
+  runOutput = run,
+  code = code
+}))
 
 ngx.exit(200)
 

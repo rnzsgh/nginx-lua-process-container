@@ -19,14 +19,14 @@ local cjson = require "cjson"
 
 ngx.req.read_body()
 
-function cleanup ()
+function cleanup()
   os.remove('/tmp/Test.java')
   os.remove('/tmp/Test.class')
   os.remove('/tmp/compile_output')
   os.remove('/tmp/run_output')
 end
 
-function readFile (fileName)
+function read_file(fileName)
   local file = io.open(fileName, 'r')
   local content = file:read('*a')
   file:close()
@@ -42,19 +42,19 @@ java_file:write(code)
 java_file:close()
 
 os.execute('javac -d /tmp/ /tmp/Test.java 2> /tmp/compile_output')
-local compileError = readFile('/tmp/compile_output')
+local compile_err = read_file('/tmp/compile_output')
 
 -- Only run if the compile did not fail
 local run = ''
-if compileError == '' then
+if compile_err == '' then
   -- This is really powerful if Java can run any command. Configure runtime security
   -- to limit socket, network, file, etc.
   os.execute('java -classpath /tmp Test > /tmp/run_output')
-  run = readFile('/tmp/run_output')
+  run = read_file('/tmp/run_output')
 end
 
 ngx.say(cjson.encode({
-  compileError = compileError,
+  compileError = compile_err,
   runOutput = run,
   code = code
 }))
